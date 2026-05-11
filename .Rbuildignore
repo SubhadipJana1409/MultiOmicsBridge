@@ -1,0 +1,10 @@
+^\.github$
+^.*\.Rproj$
+^LICENSE\.md$
+^\.Rbuildignore$
+^MultiOmicsBridge\.BiocCheck$
+^README\.md$
+^\.gitignore$
+^\.Rproj\.user$
+^\.positai$
+^\.claude$
