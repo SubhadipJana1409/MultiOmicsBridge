@@ -1,0 +1,66 @@
+Package: MultiOmicsBridge
+Type: Package
+Title: Integrative Multi-Omics Analysis of Host Transcriptomics and Gut
+    Microbiome Data
+Version: 0.99.0
+Authors@R: c(
+    person("Subhadip", "Jana", role = c("aut", "cre"),
+           email = "subhadipjana1409@gmail.com",
+           comment = c(ORCID = "0009-0003-7860-2853")))
+Description:
+    MultiOmicsBridge provides an end-to-end, reproducible computational
+    framework for integrative analysis of paired host transcriptomics
+    (bulk RNA-seq) and gut microbiome (16S rRNA or shotgun metagenomics)
+    data. The package addresses the lack of a unified Bioconductor
+    workflow for this pairing by implementing five modules: (1) data
+    harmonization and normalization with CLR transformation for microbiome
+    compositional data and TMM/voom for RNA-seq; (2) joint dimensionality
+    reduction via sparse multi-block PLS-DA (DIABLO); (3) multi-omics
+    biomarker discovery through cross-omics correlation networks and sparse
+    feature loadings; (4) integrated diagnostic classification comparing
+    host-only, microbiome-only, and joint Random Forest models with nested
+    cross-validation; and (5) publication-quality visualization of
+    integration results, biomarker networks, classifier comparisons, and
+    feature flow diagrams. All functions operate natively on
+    SummarizedExperiment and MultiAssayExperiment objects and return a
+    structured MOBResult S4 object. The package is validated on
+    inflammatory bowel disease multi-omics data and designed with African
+    disease contexts (tuberculosis, HIV, EED) in mind.
+License: MIT + file LICENSE
+URL: https://github.com/SubhadipJana1409/MultiOmicsBridge
+BugReports: https://github.com/SubhadipJana1409/MultiOmicsBridge/issues
+biocViews: GeneExpression, Metagenomics, Classification,
+           DimensionReduction, Normalization, StatisticalMethod,
+           Sequencing, Microbiome, Transcriptomics, WorkflowStep,
+           MultipleComparison, FeatureExtraction, Network,
+           Visualization, QualityControl
+Encoding: UTF-8
+Depends:
+    R (>= 4.6.0)
+Imports:
+    SummarizedExperiment,
+    MultiAssayExperiment,
+    S4Vectors,
+    BiocParallel,
+    limma,
+    edgeR,
+    mixOmics,
+    grid,
+    methods,
+    stats,
+    utils,
+    ggplot2,
+    rlang,
+    ranger,
+    pROC
+Suggests:
+    BiocStyle,
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0),
+    withr,
+    curatedMetagenomicData,
+    GEOquery
+VignetteBuilder: knitr
+Config/testthat/edition: 3
+Config/roxygen2/version: 8.0.0
