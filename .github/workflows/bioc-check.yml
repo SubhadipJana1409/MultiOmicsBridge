@@ -1,0 +1,71 @@
+on:
+  push:
+    branches: [main, devel]
+  pull_request:
+    branches: [main, devel]
+
+name: Bioc-check
+
+jobs:
+  bioc-check:
+    runs-on: ubuntu-latest
+    container: bioconductor/bioconductor_docker:devel
+
+    env:
+      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          apt-get update -qq
+          apt-get install -y --no-install-recommends \
+            libcurl4-openssl-dev \
+            libssl-dev \
+            libxml2-dev \
+            libhdf5-dev
+
+      - name: Install BiocManager and core dependencies
+        run: |
+          if (!requireNamespace("BiocManager", quietly = TRUE))
+              install.packages("BiocManager")
+          BiocManager::install(ask = FALSE, update = TRUE)
+          BiocManager::install(
+              c("remotes", "BiocCheck", "BiocStyle"),
+              ask = FALSE, update = FALSE
+          )
+          remotes::install_deps(
+              dependencies = TRUE,
+              repos        = BiocManager::repositories(),
+              Ncpus        = 2L
+          )
+        shell: Rscript {0}
+
+      - name: Build package
+        run: R CMD build .
+
+      - name: Run R CMD check
+        run: |
+          R CMD check --no-manual \
+            --no-build-vignettes *.tar.gz
+
+      - name: Run BiocCheck
+        run: |
+          BiocCheck::BiocCheck(
+              dir(pattern = "\\.tar\\.gz$"),
+              `new-package`               = TRUE,
+              `no-check-bioc-views`       = FALSE,
+              `no-check-coding-practices` = FALSE
+          )
+        shell: Rscript {0}
+
+      - name: Upload check results on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: check-results
+          path: |
+            *.Rcheck
