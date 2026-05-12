@@ -99,9 +99,15 @@ char_cols <- grep("characteristics_ch1", names(pdata), value = TRUE)
 cat("\nCharacteristic columns:\n")
 print(pdata[1:3, char_cols, drop = FALSE])
 
-# GSE87466 specific: condition is in characteristics_ch1
-# "diagnosis: UC" or "diagnosis: normal"
-cond_col_geo <- char_cols[1]
+# GSE87466 specific: condition is in one of the characteristics columns
+# Look for "disease: " or "diagnosis: "
+cond_col_geo <- char_cols[vapply(char_cols, function(col) {
+    any(grepl("disease:|diagnosis:", pdata[[col]], ignore.case = TRUE))
+}, logical(1))][1]
+
+if (is.na(cond_col_geo)) {
+    cond_col_geo <- char_cols[3] # fallback
+}
 conditions_raw <- as.character(pdata[[cond_col_geo]])
 
 # Parse condition labels
@@ -127,6 +133,15 @@ cat(sprintf("\nRetaining: %d samples (%d UC, %d Control)\n",
 # GSE87466 is a microarray dataset (Affymetrix) — convert to count-like
 # matrix by taking 2^x to undo log2 transformation and rounding
 expr_mat <- exprs(gse_sub)
+
+if (nrow(expr_mat) == 0 || ncol(expr_mat) == 0) {
+    stop("GEO returned an empty expression matrix. Please verify internet connection and GEO availability.")
+}
+
+# Ensure matrix has rownames
+if (is.null(rownames(expr_mat))) {
+    rownames(expr_mat) <- paste0("Gene_", seq_len(nrow(expr_mat)))
+}
 
 # Check if data is log-transformed (typical for GEO processed data)
 if (max(expr_mat, na.rm = TRUE) < 30) {
