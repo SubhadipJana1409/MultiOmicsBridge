@@ -73,13 +73,13 @@ MultiOmicsBridge provides all four in a single, opinionated pipeline.
 }
 }
 
-\section{African health context}{
+\section{Complex disease contexts}{
 
-The package is designed with African health priorities in mind and
+The package is designed as a generalized framework and
 validated on tuberculosis, HIV antiretroviral therapy, and inflammatory
 bowel disease datasets. By providing a standardized, accessible
 workflow, MultiOmicsBridge lowers the barrier to multi-omics integration
-for researchers working on underrepresented populations and disease
+for researchers working across various disease
 contexts.
 }
 
@@ -105,11 +105,11 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Subhadip Jana \email{subhadipjana1409@gmail.com} (\href{https://orcid.org/0009-0003-7860-2853}{ORCID})
+\strong{Maintainer}: Subhadip Jana \email{subhadipjana1409@gmail.com} (\href{https://orcid.org/0009-0003-7860-2853}{ORCID}) [funder]
 
 Authors:
 \itemize{
-  \item Subhadip Jana \email{subhadipjana1409@gmail.com} (\href{https://orcid.org/0009-0003-7860-2853}{ORCID})
+  \item Subhadip Jana \email{subhadipjana1409@gmail.com} (\href{https://orcid.org/0009-0003-7860-2853}{ORCID}) [funder]
 }
 
 }
