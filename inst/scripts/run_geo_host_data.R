@@ -320,6 +320,9 @@ ggsave(file.path(outdir, "geo_classifier.png"), p2, width = 7, height = 5)
 p3 <- plotBiomarkerNetwork(result_geo, mae_geo, n_host = 15, n_mb = 10)
 ggsave(file.path(outdir, "geo_network.png"), p3, width = 10, height = 8)
 
+p4 <- plotSankey(result_geo, n_features = 12)
+ggsave(file.path(outdir, "geo_sankey.png"), p4, width = 10, height = 6)
+
 cat(sprintf("\nAll plots saved to: %s\n", outdir))
 
 generateReport(result_geo, n_top = 10)
