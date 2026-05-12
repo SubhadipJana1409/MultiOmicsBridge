@@ -134,16 +134,25 @@ plotBiomarkerNetwork <- function(result,
     }
 
     # ── Melt to long format ───────────────────────────────────────────────────
+    clean_labels <- function(x) {
+        x <- gsub("^[a-z]__", "", x)
+        x <- ifelse(nchar(x) > 30, paste0(substr(x, 1, 28), "..."), x)
+        make.unique(x)
+    }
+
+    clean_rows <- clean_labels(rownames(cor_mat))
+    clean_cols <- clean_labels(colnames(cor_mat))
+
     plot_df <- do.call(rbind, lapply(seq_len(nrow(cor_mat)), function(i) {
         data.frame(
-            gene       = rownames(cor_mat)[i],
-            taxon      = colnames(cor_mat),
+            gene       = clean_rows[i],
+            taxon      = clean_cols,
             correlation = cor_mat[i, ],
             stringsAsFactors = FALSE
         )
     }))
-    plot_df$gene  <- factor(plot_df$gene,  levels = rownames(cor_mat))
-    plot_df$taxon <- factor(plot_df$taxon, levels = colnames(cor_mat))
+    plot_df$gene  <- factor(plot_df$gene,  levels = clean_rows)
+    plot_df$taxon <- factor(plot_df$taxon, levels = clean_cols)
 
     ggplot(plot_df, aes(x = .data[["taxon"]], y = .data[["gene"]],
                         fill = .data[["correlation"]])) +

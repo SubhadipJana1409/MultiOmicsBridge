@@ -10,7 +10,7 @@
 #   Vanhove W et al. (2018) Gut 67:1573-1581
 #
 # MICROBIOME:
-#   FranzsosaEA_2019 from curatedMetagenomicData (same as run_ibdmdb_demo.R)
+#   HMP_2019_ibdmdb from curatedMetagenomicData (same as run_ibdmdb_demo.R)
 #   NOTE: Not truly paired (different individuals), but condition-matched.
 #         This demonstrates the workflow for condition-matched multi-omics.
 #         For truly paired samples, use the full IBDMDB portal download
@@ -27,7 +27,7 @@
 
 cat("==========================================================\n")
 cat("  MultiOmicsBridge — Real GEO Host RNA-seq Demo\n")
-cat("  GSE87466 (UC RNA-seq) + FranzsosaEA_2019 (Microbiome)\n")
+cat("  GSE87466 (UC RNA-seq) + HMP_2019_ibdmdb (Microbiome)\n")
 cat("==========================================================\n\n")
 
 # ── 0. Package checks ─────────────────────────────────────────────────────────
@@ -44,7 +44,7 @@ missing_pkgs <- required_pkgs[!vapply(required_pkgs,
     requireNamespace, logical(1), quietly = TRUE)]
 if (length(missing_pkgs) > 0L) {
     if (!requireNamespace("BiocManager", quietly = TRUE))
-        install.packages("BiocManager")
+        install.packages("BiocManager", repos = "https://cloud.r-project.org")
     BiocManager::install(missing_pkgs, ask = FALSE)
 }
 
@@ -56,7 +56,7 @@ suppressPackageStartupMessages({
     library(MultiAssayExperiment)
 })
 
-outdir <- file.path(tempdir(), "MultiOmicsBridge_GEO")
+outdir <- file.path(getwd(), "man", "figures")
 dir.create(outdir, showWarnings = FALSE, recursive = TRUE)
 cat(sprintf("Output directory: %s\n\n", outdir))
 
@@ -167,12 +167,12 @@ host_se_geo <- loadHostData(
 cat("Host SummarizedExperiment (REAL GEO DATA):\n")
 print(host_se_geo)
 
-# ── 3. Download FranzsosaEA_2019 microbiome data ──────────────────────────────
+# ── 3. Download HMP_2019_ibdmdb microbiome data ──────────────────────────────
 
 cat("\n=== STEP 3: Download IBD Microbiome (curatedMetagenomicData) ===\n")
 
 tse_list <- curatedMetagenomicData(
-    "FranzsosaEA_2019.relative_abundance",
+    "HMP_2019_ibdmdb.relative_abundance",
     dryrun  = FALSE,
     rownames = "short"
 )
@@ -180,8 +180,17 @@ tse <- tse_list[[1]]
 sample_meta <- as.data.frame(colData(tse))
 
 # Filter to UC vs nonIBD
-cond_col_mb <- intersect(c("disease","study_condition","condition"),
+cond_col_mb <- intersect(c("study_condition", "disease", "condition"),
                           names(sample_meta))[1]
+
+if ("disease_subtype" %in% names(sample_meta)) {
+    composite_cond <- as.character(sample_meta$disease_subtype)
+    composite_cond[is.na(composite_cond)] <- as.character(sample_meta[[cond_col_mb]])[is.na(composite_cond)]
+    composite_cond[composite_cond %in% c("healthy", "control")] <- "nonIBD"
+    sample_meta$final_condition <- composite_cond
+    cond_col_mb <- "final_condition"
+}
+
 keep_mb <- sample_meta[[cond_col_mb]] %in% c("UC", "nonIBD")
 tse_mb  <- tse[, keep_mb]
 meta_mb <- sample_meta[keep_mb, ]

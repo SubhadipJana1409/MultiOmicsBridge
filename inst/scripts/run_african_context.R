@@ -53,7 +53,7 @@ missing_pkgs <- required_pkgs[!vapply(required_pkgs,
     requireNamespace, logical(1), quietly = TRUE)]
 if (length(missing_pkgs) > 0L) {
     if (!requireNamespace("BiocManager", quietly = TRUE))
-        install.packages("BiocManager")
+        install.packages("BiocManager", repos = "https://cloud.r-project.org")
     BiocManager::install(missing_pkgs, ask = FALSE)
 }
 
@@ -64,7 +64,7 @@ suppressPackageStartupMessages({
     library(ggplot2)
 })
 
-outdir <- file.path(tempdir(), "MultiOmicsBridge_Africa")
+outdir <- file.path(getwd(), "man", "figures")
 dir.create(outdir, showWarnings = FALSE, recursive = TRUE)
 
 t0 <- Sys.time()

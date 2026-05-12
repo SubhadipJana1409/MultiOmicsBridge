@@ -115,7 +115,7 @@ validated on three disease contexts:
 
 | Disease | Dataset | Host | Microbiome |
 |---|---|---|---|
-| IBD | FranzsosaEA_2019 (IBDMDB) | Simulated (IBD signatures) | Real (curatedMetagenomicData) |
+| IBD | HMP_2019_ibdmdb (IBDMDB) | Simulated (IBD signatures) | Real (curatedMetagenomicData) |
 | Tuberculosis | GEO: GSE79362 | Real (blood RNA-seq) | Simulated (TB dysbiosis) |
 | HIV/ART | Published signatures | Simulated | Simulated |
 

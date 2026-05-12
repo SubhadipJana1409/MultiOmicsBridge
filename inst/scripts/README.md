@@ -28,7 +28,7 @@ source("inst/scripts/make_example_data.R")
 Full end-to-end validation on the IBDMDB dataset (Franzosa et al. 2019).
 
 - **Microbiome**: REAL data from `curatedMetagenomicData` (Bioconductor)
-  — FranzsosaEA_2019, 220 stool metagenomics samples, UC/CD/nonIBD
+  — HMP_2019_ibdmdb, 220 stool metagenomics samples, UC/CD/nonIBD
 - **Host RNA-seq**: Biologically realistic simulation using published IBD
   transcriptional signatures (CXCL8, S100A8, MUC2, TFF3, etc.)
 
@@ -51,7 +51,7 @@ source("inst/scripts/run_ibdmdb_demo.R")
 - Joint AUC > 0.70 on UC vs nonIBD classification
 - Known IBD genes (CXCL8, S100A8, MUC2) in top host biomarkers
 - Faecalibacterium_prausnitzii, Ruminococcus_gnavus in top mb biomarkers
-- 5 PNG plots in tempdir()
+- 5 PNG plots in man/figures/
 
 ---
 
@@ -66,7 +66,7 @@ source("inst/scripts/run_geo_host_data.R")
 
 **Dataset:** GSE87466 — RNA-seq from rectal biopsies (45 UC, 45 Control)
 
-Note: GSE87466 and FranzsosaEA_2019 do not share the same individuals.
+Note: GSE87466 and HMP_2019_ibdmdb do not share the same individuals.
 This script demonstrates **condition-matched** integration (same disease
 status, different subjects) — a common practical scenario. For truly
 paired integration, use `run_ibdmdb_full_paired.R` with the IBDMDB

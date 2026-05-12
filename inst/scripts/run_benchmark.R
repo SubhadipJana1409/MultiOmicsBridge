@@ -33,7 +33,7 @@ suppressPackageStartupMessages({
     library(ggplot2)
 })
 
-outdir <- file.path(tempdir(), "MultiOmicsBridge_Benchmark")
+outdir <- file.path(getwd(), "man", "figures")
 dir.create(outdir, showWarnings = FALSE, recursive = TRUE)
 
 # ── Helper: generate paired multi-omics dataset ───────────────────────────────

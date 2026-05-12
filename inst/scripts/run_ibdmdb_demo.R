@@ -6,7 +6,7 @@
 # Nature Microbiology 4:293-305).
 #
 # DATA SOURCES:
-#   Microbiome : curatedMetagenomicData (Bioconductor) — FranzsosaEA_2019
+#   Microbiome : curatedMetagenomicData (Bioconductor) — HMP_2019_ibdmdb
 #                REAL published data, 220 stool metagenomics samples,
 #                UC / CD / nonIBD subjects.
 #   Host RNA-seq: Biologically realistic simulation using known IBD
@@ -55,7 +55,7 @@ missing_pkgs <- required_pkgs[!vapply(required_pkgs,
 if (length(missing_pkgs) > 0L) {
     cat("Installing missing packages:", paste(missing_pkgs, collapse = ", "), "\n")
     if (!requireNamespace("BiocManager", quietly = TRUE))
-        install.packages("BiocManager")
+        install.packages("BiocManager", repos = "https://cloud.r-project.org")
     BiocManager::install(missing_pkgs, ask = FALSE)
 }
 
@@ -69,11 +69,11 @@ suppressPackageStartupMessages({
 })
 
 # Output directory for plots and report
-outdir <- file.path(tempdir(), "MultiOmicsBridge_IBDMDB")
+outdir <- file.path(getwd(), "man", "figures")
 dir.create(outdir, showWarnings = FALSE, recursive = TRUE)
 cat(sprintf("Output directory: %s\n\n", outdir))
 
-# ── 1. Download FranzsosaEA_2019 microbiome data ──────────────────────────────
+# ── 1. Download HMP_2019_ibdmdb microbiome data ──────────────────────────────
 
 cat("=== STEP 1: Download IBD Metagenomics (curatedMetagenomicData) ===\n")
 cat("Dataset: Franzosa EA et al. (2019) Nat Microbiol 4:293-305\n")
@@ -83,7 +83,7 @@ t0 <- Sys.time()
 
 # Download species-level relative abundances
 tse_list <- curatedMetagenomicData(
-    "FranzsosaEA_2019.relative_abundance",
+    "HMP_2019_ibdmdb.relative_abundance",
     dryrun  = FALSE,
     rownames = "short"        # short names: Genus_species format
 )
@@ -101,7 +101,7 @@ cat("Available sample metadata columns:\n")
 print(names(sample_meta))
 
 # Check condition column
-cond_col <- intersect(c("disease", "study_condition", "condition"),
+cond_col <- intersect(c("study_condition", "disease", "condition"),
                       names(sample_meta))[1]
 if (is.na(cond_col))
     stop("Cannot identify condition column in sample metadata.")
@@ -109,6 +109,15 @@ if (is.na(cond_col))
 cat(sprintf("\nCondition column: '%s'\n", cond_col))
 cat("Condition distribution:\n")
 print(table(sample_meta[[cond_col]]))
+
+# Construct a composite condition if disease_subtype exists
+if ("disease_subtype" %in% names(sample_meta)) {
+    composite_cond <- as.character(sample_meta$disease_subtype)
+    composite_cond[is.na(composite_cond)] <- as.character(sample_meta[[cond_col]])[is.na(composite_cond)]
+    composite_cond[composite_cond %in% c("healthy", "control")] <- "nonIBD"
+    sample_meta$final_condition <- composite_cond
+    cond_col <- "final_condition"
+}
 
 # Focus on UC vs nonIBD for binary classification
 # (largest, cleanest contrast in this dataset)
@@ -480,7 +489,7 @@ elapsed_total <- as.numeric(Sys.time() - t0, units = "secs")
 cat("\n============================================================\n")
 cat("  VALIDATION SUMMARY\n")
 cat("============================================================\n")
-cat(sprintf("  Dataset            : FranzsosaEA_2019 (IBDMDB)\n"))
+cat(sprintf("  Dataset            : HMP_2019_ibdmdb (IBDMDB)\n"))
 cat(sprintf("  Paired samples     : %d (UC=%d, nonIBD=%d)\n",
             ncol(mae),
             sum(outcome_vec == "UC"),

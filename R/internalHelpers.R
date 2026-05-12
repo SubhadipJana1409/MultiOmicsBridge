@@ -157,12 +157,12 @@
       next
     }
 
-    train_df <- as.data.frame(feature_mat[train_idx, , drop = FALSE])
-    test_df <- as.data.frame(feature_mat[test_idx, , drop = FALSE])
+    train_df <- as.data.frame(feature_mat[train_idx, , drop = FALSE], check.names = FALSE)
+    test_df <- as.data.frame(feature_mat[test_idx, , drop = FALSE], check.names = FALSE)
     train_df[[".__outcome__."]] <- outcome_f[train_idx]
 
     rf_fit <- ranger::ranger(
-      formula = .__outcome__. ~ .,
+      dependent.variable.name = ".__outcome__.",
       data = train_df,
       num.trees = 500L,
       probability = TRUE,

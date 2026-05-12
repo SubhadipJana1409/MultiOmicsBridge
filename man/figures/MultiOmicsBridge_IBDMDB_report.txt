@@ -1,0 +1,54 @@
+============================================================
+  MultiOmicsBridge Analysis Report
+  Generated: 2026-05-12 15:42
+============================================================
+
+MODULE 1: Data Summary
+------------------------------------------------------------
+  Paired samples      : 879
+  Latent components   : 2
+  Integration method  : DIABLO
+  Outcome             : nonIBD vs UC
+  Host features used  : 52 per component
+  MB features used    : 9 per component
+
+MODULE 3: Multi-Omics Biomarkers
+------------------------------------------------------------
+  Total biomarkers    : 120 (60 host, 60 microbiome)
+  Top 15 biomarkers (by loading score):
+  Rank Feature                   Layer        Loading
+     1 species:Alistipes putredinis microbiome   0.7707
+     1 ENSG00023445              host         0.4747
+     2 species:[Ruminococcus] torques microbiome   0.4543
+     3 species:Firmicutes bacterium CAG:83 microbiome   0.4365
+     4 species:Akkermansia muciniphila microbiome   0.4014
+     5 species:Bacteroides uniformis microbiome   0.3712
+     2 ENSG00009741              host         0.3647
+     6 species:Roseburia hominis microbiome   0.3579
+     7 species:Blautia obeum     microbiome   0.3514
+     8 species:Hungatella hathewayi microbiome   0.3488
+     9 species:Bacteroides ovatus microbiome   0.2978
+    10 species:[Clostridium] symbiosum microbiome   0.2782
+     3 ENSG00041724              host         0.2735
+    11 species:Gemmiger formicilis microbiome   0.2582
+     4 ENSG00014638              host         0.2577
+
+  Top cross-omics hubs (highest partner correlation):
+  species:[Clostridium] symbiosum -> CFTR                      (r=0.342)
+  species:Alistipes putredinis -> CFTR                      (r=0.328)
+  species:Bacteroides ovatus -> ATOH1                     (r=0.286)
+  species:Firmicutes bacterium CAG:83 -> CFTR                      (r=0.261)
+  species:Gemmiger formicilis -> CLDN4                     (r=0.229)
+
+MODULE 4: Diagnostic Classifier Performance
+------------------------------------------------------------
+  Cross-validation    : 5-fold
+  Host RNA-seq only       AUC = 1.000 +/- 0.000
+  Microbiome only         AUC = 0.981 +/- 0.011
+  Joint (multi-omics)     AUC = 1.000 +/- 0.000
+
+  Multi-omics gain vs host-only: +0.000 AUC
+
+============================================================
+  End of report
+============================================================

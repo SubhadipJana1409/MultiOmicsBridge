@@ -92,8 +92,13 @@ plotSankey <- function(result,
     # Biomarker nodes (evenly spaced vertically)
     n_bm  <- nrow(all_bm)
     bm_y  <- seq(0.95, 0.05, length.out = n_bm)
+    clean_labels <- function(x) {
+        x <- gsub("^[a-z]__", "", x)
+        ifelse(nchar(x) > 22, paste0(substr(x, 1, 20), "..."), x)
+    }
+
     bm_nodes <- data.frame(
-        label   = all_bm$feature,
+        label   = clean_labels(all_bm$feature),
         x       = x_bm,
         y       = bm_y,
         fill    = all_bm$omics_layer,

@@ -127,10 +127,14 @@ plotIntegration <- function(result,
             top_idx   <- order(scores_l2, decreasing = TRUE)[
                 seq_len(min(n_loading_arrows, nrow(lmat)))]
             scale_f   <- max(abs(scores)) / max(abs(lmat[top_idx, ]))
+            clean_labels <- function(x) {
+                x <- gsub("^[a-z]__", "", x)
+                ifelse(nchar(x) > 20, paste0(substr(x, 1, 18), "..."), x)
+            }
             data.frame(
                 xend  = lmat[top_idx, c1] * scale_f * 0.8,
                 yend  = lmat[top_idx, c2] * scale_f * 0.8,
-                label = rownames(lmat)[top_idx],
+                label = clean_labels(rownames(lmat)[top_idx]),
                 layer = layer,
                 stringsAsFactors = FALSE
             )
@@ -138,20 +142,25 @@ plotIntegration <- function(result,
 
         if (!is.null(arrow_df) && nrow(arrow_df) > 0L) {
             arrow_df$x <- 0; arrow_df$y <- 0
+            
+            # Colour arrows by layer (Host = Blue, Microbiome = Orange)
+            arrow_df$arr_col <- ifelse(arrow_df$layer == "host", "#2196F3", "#FF9800")
+            
             p <- p +
                 geom_segment(
                     data = arrow_df,
                     aes(x = .data[["x"]], y = .data[["y"]],
                         xend = .data[["xend"]], yend = .data[["yend"]]),
                     arrow = grid::arrow(length = grid::unit(0.15, "cm")),
-                    colour = "grey30", linewidth = 0.5,
+                    colour = arrow_df$arr_col, linewidth = 0.5,
                     inherit.aes = FALSE
                 ) +
-                geom_text(
+                ggrepel::geom_text_repel(
                     data = arrow_df,
                     aes(x = .data[["xend"]], y = .data[["yend"]],
                         label = .data[["label"]]),
-                    size = 2.8, vjust = -0.4, colour = "grey20",
+                    size = 3.0, colour = arrow_df$arr_col, fontface = "bold",
+                    segment.colour = NA, box.padding = 0.5, force = 2,
                     inherit.aes = FALSE
                 )
         }
