@@ -1,4 +1,7 @@
 single_commits.ps1
 .Rproj.user
 .positai
-*.txt.gzMultiOmicsBridge.BiocCheck/
+*.gz
+MultiOmicsBridge.BiocCheck/
+*.Rproj
+.Rhistory
