@@ -170,8 +170,17 @@ plotSankey <- function(result,
     hw <- node_width / 2
     all_nodes$xmin <- all_nodes$x - hw
     all_nodes$xmax <- all_nodes$x + hw
-    all_nodes$ymin <- all_nodes$y - 0.04
-    all_nodes$ymax <- all_nodes$y + 0.04
+    
+    # Adaptive heights to prevent overlapping
+    all_nodes$hh <- 0.04
+    all_nodes$hh[all_nodes$x == x_bm] <- pmin(0.04, 0.4 / n_bm)
+    
+    all_nodes$ymin <- all_nodes$y - all_nodes$hh
+    all_nodes$ymax <- all_nodes$y + all_nodes$hh
+    
+    # Adaptive text sizes
+    all_nodes$t_size <- 3.0
+    all_nodes$t_size[all_nodes$x == x_bm] <- pmin(2.5, 45 / n_bm)
 
     all_edges <- rbind(src_to_bm, bm_to_out)
 
@@ -198,9 +207,10 @@ plotSankey <- function(result,
         geom_text(
             data = all_nodes,
             aes(x = .data[["x"]], y = .data[["y"]],
-                label = .data[["label"]]),
-            size = 2.5, fontface = "bold", colour = "white"
+                label = .data[["label"]], size = .data[["t_size"]]),
+            fontface = "bold", colour = "white"
         ) +
+        scale_size_identity() +
         scale_fill_manual(values = colours, guide = "none") +
         scale_colour_manual(values = colours, guide = "none") +
         labs(
