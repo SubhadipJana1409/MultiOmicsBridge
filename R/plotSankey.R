@@ -45,7 +45,7 @@
 #'   \code{\link{plotIntegration}}, \code{\link{plotBiomarkerNetwork}}
 #'
 #' @importFrom ggplot2 ggplot aes geom_rect geom_segment geom_text
-#' @importFrom ggplot2 scale_fill_manual scale_colour_manual labs theme_void theme
+#' @importFrom ggplot2 scale_fill_manual scale_colour_manual scale_size_identity labs theme_void theme
 #' @importFrom ggplot2 element_text
 #' @importFrom methods is
 #' @importFrom utils head
