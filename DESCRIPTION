@@ -4,7 +4,7 @@ Title: Integrative Multi-Omics Analysis of Host Transcriptomics and Gut
     Microbiome Data
 Version: 0.99.0
 Authors@R: c(
-    person("Subhadip", "Jana", role = c("aut", "cre"),
+    person("Subhadip", "Jana", role = c("aut", "cre", "fnd"),
            email = "subhadipjana1409@gmail.com",
            comment = c(ORCID = "0009-0003-7860-2853")))
 Description:
