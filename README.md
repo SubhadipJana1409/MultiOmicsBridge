@@ -48,6 +48,20 @@ Module 5: Visualization & Reporting
   generateReport()            Structured text summary
 ```
 
+## Why CLR for microbiome data?
+
+Microbiome count data is **compositional** — only relative abundances are
+observed. Standard correlation and distance measures applied to compositional
+data produce spurious results (the Aitchison problem). The centered log-ratio
+(CLR) transformation maps compositional data to real Euclidean space:
+
+```
+clr(x_j) = log(x_j + δ) − mean_k[log(x_k + δ)]
+```
+
+where δ is a small pseudocount. This removes the unit-sum constraint and
+enables valid correlation analysis between host genes and microbial taxa.
+
 ## Installation
 
 ```r
@@ -108,6 +122,28 @@ plotSankey(result, n_features = 8)
 generateReport(result)
 ```
 
+## Key functions
+
+| Function | Input | Output |
+|---|---|---|
+| `loadHostData()` | count matrix | SummarizedExperiment |
+| `loadMicrobiomeData()` | taxa table | SummarizedExperiment |
+| `matchSamples()` | 2 × SE | MultiAssayExperiment |
+| `jointDimReduction()` | MAE + outcome | list (scores, loadings) |
+| `biomarkerDiscovery()` | MAE + DR result | DataFrame |
+| `diagnosticClassifier()` | MAE + outcome | list (AUC per model) |
+| `MultiOmicsBridgeAnalysis()` | MAE + outcome | MOBResult |
+
+## MOBResult S4 class
+
+```r
+result                     # print compact summary
+integrationScores(result)  # matrix: samples × components
+featureLoadings(result)    # list: $host and $microbiome loading matrices
+biomarkers(result)         # DataFrame: feature, layer, loading_score, cross-cor
+performance(result)        # list: host_only, microbiome_only, joint AUC
+```
+
 ## African Health Context
 
 MultiOmicsBridge is designed with African health priorities in mind and
@@ -124,32 +160,6 @@ are increasingly recognized as relevant to TB progression and treatment
 response. For HIV/ART, gut microbiome composition is a significant predictor
 of immune reconstitution. MultiOmicsBridge provides a standardized,
 accessible tool for these analyses in resource-limited research settings.
-
-## Why CLR for microbiome data?
-
-Microbiome count data is **compositional** — only relative abundances are
-observed. Standard correlation and distance measures applied to compositional
-data produce spurious results (the Aitchison problem). The centered log-ratio
-(CLR) transformation maps compositional data to real Euclidean space:
-
-```
-clr(x_j) = log(x_j + δ) − mean_k[log(x_k + δ)]
-```
-
-where δ is a small pseudocount. This removes the unit-sum constraint and
-enables valid correlation analysis between host genes and microbial taxa.
-
-## Key functions
-
-| Function | Input | Output |
-|---|---|---|
-| `loadHostData()` | count matrix | SummarizedExperiment |
-| `loadMicrobiomeData()` | taxa table | SummarizedExperiment |
-| `matchSamples()` | 2 × SE | MultiAssayExperiment |
-| `jointDimReduction()` | MAE + outcome | list (scores, loadings) |
-| `biomarkerDiscovery()` | MAE + DR result | DataFrame |
-| `diagnosticClassifier()` | MAE + outcome | list (AUC per model) |
-| `MultiOmicsBridgeAnalysis()` | MAE + outcome | MOBResult |
 
 ## Validation scripts
 
@@ -273,16 +283,6 @@ The **ROC Curves** provide a detailed view of the True Positive Rate vs False Po
 ![Sankey Flow Diagram](man/figures/05_sankey_flow.png)
 
 The **Sankey Flow Diagram** elegantly maps the relationship between the top individual microbiome taxa (left), the host transcriptome features (middle), and the final disease outcome (right). The thickness of the bands represents the strength of the loading scores linking the biological layers to the diagnosis.
-
-## MOBResult S4 class
-
-```r
-result                     # print compact summary
-integrationScores(result)  # matrix: samples × components
-featureLoadings(result)    # list: $host and $microbiome loading matrices
-biomarkers(result)         # DataFrame: feature, layer, loading_score, cross-cor
-performance(result)        # list: host_only, microbiome_only, joint AUC
-```
 
 ## References
 
