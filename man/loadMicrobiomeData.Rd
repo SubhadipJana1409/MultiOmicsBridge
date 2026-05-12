@@ -80,7 +80,7 @@ colnames(taxa_table) <- paste0("Sample", seq_len(n_samples))
 
 mb_se <- loadMicrobiomeData(taxa_table, normalization = "CLR")
 mb_se
-assayNames(mb_se)
+SummarizedExperiment::assayNames(mb_se)
 
 }
 \seealso{

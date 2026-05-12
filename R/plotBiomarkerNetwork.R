@@ -51,11 +51,10 @@
 #'                                      n_biomarkers = 15, cv_folds = 3)
 #' plotBiomarkerNetwork(result, mae, n_host = 10, n_mb = 8)
 #'
-#' @seealso \code{\link{MultiOmicsBridgeAnalysis}}, \code{\link{plotIntegration}},
-#'   \code{\link{plotTCRatio}}
+#' @seealso \code{\link{MultiOmicsBridgeAnalysis}}, \code{\link{plotIntegration}}
 #'
 #' @importFrom ggplot2 ggplot aes geom_tile scale_fill_gradient2 labs
-#'   theme_bw theme element_text element_blank
+#' @importFrom ggplot2 theme_bw theme element_text element_blank
 #' @importFrom MultiAssayExperiment experiments
 #' @importFrom SummarizedExperiment assay assayNames
 #' @importFrom methods is
@@ -162,7 +161,7 @@ plotBiomarkerNetwork <- function(result,
             x     = "Microbial taxon",
             y     = "Host gene",
             title = "Cross-Omics Biomarker Correlation Network",
-            subtitle = sprintf("Top %d genes × %d taxa",
+            subtitle = sprintf("Top %d genes x %d taxa",
                                length(host_use), length(mb_use))
         ) +
         theme_bw(base_size = 10) +

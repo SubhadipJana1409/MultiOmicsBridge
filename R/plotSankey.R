@@ -45,10 +45,11 @@
 #'   \code{\link{plotIntegration}}, \code{\link{plotBiomarkerNetwork}}
 #'
 #' @importFrom ggplot2 ggplot aes geom_rect geom_segment geom_text
-#'   scale_fill_manual scale_colour_manual labs theme_void theme
-#'   element_text
+#' @importFrom ggplot2 scale_fill_manual scale_colour_manual labs theme_void theme
+#' @importFrom ggplot2 element_text
 #' @importFrom methods is
 #' @importFrom utils head
+#' @importFrom stats setNames
 #' @export
 plotSankey <- function(result,
                         n_features = 10L,
@@ -75,7 +76,7 @@ plotSankey <- function(result,
 
     if (nrow(all_bm) == 0L) stop("No features to plot.")
 
-    # ── Layout (3 columns: source → biomarker → outcome) ─────────────────────
+    # -- Layout (3 columns: source -> biomarker -> outcome) --------------------
     # X positions: source = 0, biomarker = 1, outcome = 2
     x_src <- 0.05; x_bm <- 0.5; x_out <- 0.95
 
@@ -118,7 +119,7 @@ plotSankey <- function(result,
         )
     }
 
-    # ── Edges: source → biomarker ─────────────────────────────────────────────
+    # -- Edges: source -> biomarker --------------------------------------------
     src_to_bm <- do.call(rbind, lapply(seq_len(n_bm), function(i) {
         src_y <- if (all_bm$omics_layer[i] == "host") 0.75 else 0.25
         data.frame(
@@ -132,7 +133,7 @@ plotSankey <- function(result,
         )
     }))
 
-    # ── Edges: biomarker → outcome (each bm connects to both outcomes) ────────
+    # -- Edges: biomarker -> outcome (each bm connects to both outcomes) -------
     bm_to_out <- do.call(rbind, lapply(seq_len(n_bm), function(i) {
         out_y <- c(0.7, 0.3)
         do.call(rbind, lapply(seq_along(outcome_lvls), function(j) {
@@ -198,7 +199,7 @@ plotSankey <- function(result,
         scale_fill_manual(values = colours, guide = "none") +
         scale_colour_manual(values = colours, guide = "none") +
         labs(
-            title    = "Feature Flow: Omics Layer → Biomarkers → Outcome",
+            title    = "Feature Flow: Omics Layer -> Biomarkers -> Outcome",
             subtitle = sprintf("Top %d features per layer", n_features)
         ) +
         theme_void() +

@@ -214,11 +214,11 @@ setMethod("show", "MOBResult", function(object) {
     cat("  Components     :", ncol(sc), "\n")
     cat("  Biomarkers     :", nrow(bm),
         sprintf("(%d host, %d microbiome)", n_host, n_mb), "\n")
-    cat("  -- Classifier AUC (mean ± SD) -----------\n")
+    cat("  -- Classifier AUC (mean +/- SD) -----------\n")
     for (nm in c("host_only", "microbiome_only", "joint")) {
         r <- cr[[nm]]
         if (!is.null(r)) {
-            cat(sprintf("  %-16s %.3f ± %.3f\n",
+            cat(sprintf("  %-16s %.3f +/- %.3f\n",
                         paste0(nm, ":"),
                         r$mean_auc %||% NA,
                         r$sd_auc   %||% NA))

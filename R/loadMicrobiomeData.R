@@ -62,7 +62,7 @@
 #'
 #' mb_se <- loadMicrobiomeData(taxa_table, normalization = "CLR")
 #' mb_se
-#' assayNames(mb_se)
+#' SummarizedExperiment::assayNames(mb_se)
 #'
 #' @seealso \code{\link{loadHostData}}, \code{\link{matchSamples}},
 #'   \code{\link{MultiOmicsBridgeAnalysis}}

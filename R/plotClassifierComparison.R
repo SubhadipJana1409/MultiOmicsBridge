@@ -47,9 +47,10 @@
 #'   \code{\link{diagnosticClassifier}}, \code{\link{performance}}
 #'
 #' @importFrom ggplot2 ggplot aes geom_line geom_abline geom_bar geom_errorbar
-#'   geom_text scale_color_manual scale_fill_manual labs theme_bw theme
-#'   element_text element_blank position_dodge coord_flip
+#' @importFrom ggplot2 geom_text scale_color_manual scale_fill_manual labs theme_bw theme
+#' @importFrom ggplot2 element_text element_blank position_dodge coord_flip
 #' @importFrom methods is
+#' @importFrom stats setNames
 #' @export
 plotClassifierComparison <- function(result,
                                       type         = c("roc", "bar"),
@@ -132,7 +133,7 @@ plotClassifierComparison <- function(result,
             data.frame(
                 specificity = rev(roc_obj$specificities),
                 sensitivity = rev(roc_obj$sensitivities),
-                model       = labels[nm],
+                model       = unname(labels[nm]),
                 auc         = as.numeric(pROC::auc(roc_obj)),
                 stringsAsFactors = FALSE
             )

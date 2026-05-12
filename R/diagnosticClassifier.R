@@ -21,7 +21,7 @@
 #'   \item For each fold, train on the remaining folds, predict on the
 #'     held-out fold.
 #'   \item Compute AUC-ROC on held-out predictions.
-#'   \item Report mean ± SD AUC across folds.
+#'   \item Report mean +/- SD AUC across folds.
 #' }
 #'
 #' @param mae A \code{MultiAssayExperiment} from \code{\link{matchSamples}}.

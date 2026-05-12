@@ -73,7 +73,7 @@ col_data <- data.frame(
 
 host_se <- loadHostData(counts, col_data = col_data)
 host_se
-assayNames(host_se)
+SummarizedExperiment::assayNames(host_se)
 
 }
 \seealso{

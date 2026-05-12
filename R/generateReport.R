@@ -88,10 +88,10 @@ generateReport <- function(result, file = NULL, n_top = 10L) {
                 p$integration_method %||% "DIABLO"),
         sprintf("  Outcome             : %s",
                 paste(p$outcome_levels %||% "unknown", collapse = " vs ")),
-        sprintf("  Host features used  : %d per component",
-                p$n_features_host %||% "N/A"),
-        sprintf("  MB features used    : %d per component",
-                p$n_features_mb %||% "N/A")
+        sprintf("  Host features used  : %s per component",
+                as.character(p$n_features_host %||% "N/A")),
+        sprintf("  MB features used    : %s per component",
+                as.character(p$n_features_mb %||% "N/A"))
     )
 
     # ── Module 3: Biomarker Summary ───────────────────────────────────────────
@@ -129,7 +129,7 @@ generateReport <- function(result, file = NULL, n_top = 10L) {
                               "  Top cross-omics hubs (highest partner correlation):")
                 for (i in seq_len(min(5L, nrow(hub)))) {
                     bm_lines <- c(bm_lines,
-                                  sprintf("  %-25s → %-25s (r=%.3f)",
+                                  sprintf("  %-25s -> %-25s (r=%.3f)",
                                           hub$feature[i],
                                           hub$top_partner[i] %||% "NA",
                                           hub$max_cross_cor[i]))
@@ -159,7 +159,7 @@ generateReport <- function(result, file = NULL, n_top = 10L) {
         r <- cr[[nm]]
         if (is.null(r)) next
         clf_lines <- c(clf_lines,
-                       sprintf("  %-22s  AUC = %.3f ± %.3f",
+                       sprintf("  %-22s  AUC = %.3f +/- %.3f",
                                model_labels[nm],
                                r$mean_auc %||% NA,
                                r$sd_auc   %||% 0))
@@ -181,7 +181,7 @@ generateReport <- function(result, file = NULL, n_top = 10L) {
 
     # ── Print ─────────────────────────────────────────────────────────────────
     all_lines <- unlist(lines)
-    cat(paste(all_lines, collapse = "\n"), "\n")
+    message(paste(all_lines, collapse = "\n"))
 
     # ── Optional file save ────────────────────────────────────────────────────
     if (!is.null(file)) {

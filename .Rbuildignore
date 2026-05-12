@@ -8,3 +8,4 @@
 ^\.Rproj\.user$
 ^\.positai$
 ^\.claude$
+^single_commits\.ps1$

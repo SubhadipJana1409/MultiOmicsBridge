@@ -62,7 +62,7 @@
 #'
 #' host_se <- loadHostData(counts, col_data = col_data)
 #' host_se
-#' assayNames(host_se)
+#' SummarizedExperiment::assayNames(host_se)
 #'
 #' @seealso \code{\link{loadMicrobiomeData}}, \code{\link{matchSamples}},
 #'   \code{\link{MultiOmicsBridgeAnalysis}}

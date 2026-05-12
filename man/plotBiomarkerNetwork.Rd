@@ -81,6 +81,5 @@ plotBiomarkerNetwork(result, mae, n_host = 10, n_mb = 8)
 
 }
 \seealso{
-\code{\link{MultiOmicsBridgeAnalysis}}, \code{\link{plotIntegration}},
-  \code{\link{plotTCRatio}}
+\code{\link{MultiOmicsBridgeAnalysis}}, \code{\link{plotIntegration}}
 }

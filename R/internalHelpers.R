@@ -19,11 +19,11 @@
 #' @keywords internal
 #' @noRd
 .clrTransform <- function(x, pseudocount = 0.5) {
-    if (!is.matrix(x)) x <- as.matrix(x)
-    x_pseudo <- x + pseudocount
-    log_x    <- log(x_pseudo)
-    # Subtract column-wise geometric mean (mean of log values per sample)
-    sweep(log_x, 2L, colMeans(log_x), FUN = "-")
+  if (!is.matrix(x)) x <- as.matrix(x)
+  x_pseudo <- x + pseudocount
+  log_x <- log(x_pseudo)
+  # Subtract column-wise geometric mean (mean of log values per sample)
+  sweep(log_x, 2L, colMeans(log_x), FUN = "-")
 }
 
 #' Total sum scaling for microbiome count data
@@ -38,10 +38,10 @@
 #' @keywords internal
 #' @noRd
 .tssTransform <- function(x, scale_to = 1e6) {
-    if (!is.matrix(x)) x <- as.matrix(x)
-    col_sums <- colSums(x)
-    col_sums[col_sums == 0L] <- 1L
-    sweep(x, 2L, col_sums / scale_to, FUN = "/")
+  if (!is.matrix(x)) x <- as.matrix(x)
+  col_sums <- colSums(x)
+  col_sums[col_sums == 0L] <- 1L
+  sweep(x, 2L, col_sums / scale_to, FUN = "/")
 }
 
 #' TMM normalization + voom transformation for RNA-seq count data
@@ -59,10 +59,10 @@
 #' @keywords internal
 #' @noRd
 .voomNormalize <- function(counts, design = NULL) {
-    dge <- edgeR::DGEList(counts = counts)
-    dge <- edgeR::calcNormFactors(dge, method = "TMM")
-    v   <- limma::voom(dge, design = design, plot = FALSE)
-    list(E = v$E, weights = v$weights)
+  dge <- edgeR::DGEList(counts = counts)
+  dge <- edgeR::calcNormFactors(dge, method = "TMM")
+  v <- limma::voom(dge, design = design, plot = FALSE)
+  list(E = v$E, weights = v$weights)
 }
 
 # ── Cross-omics correlation helpers ──────────────────────────────────────────
@@ -80,22 +80,26 @@
 #' @keywords internal
 #' @noRd
 .crossOmicsCorrelation <- function(host_mat, mb_mat) {
-    # Rank each column
-    host_ranks <- apply(host_mat, 2L, rank, ties.method = "average")
-    mb_ranks   <- apply(mb_mat,   2L, rank, ties.method = "average")
+  # Rank each column
+  host_ranks <- apply(host_mat, 2L, rank, ties.method = "average")
+  mb_ranks <- apply(mb_mat, 2L, rank, ties.method = "average")
 
-    # Pearson correlation of ranks = Spearman correlation
-    n <- nrow(host_mat)
-    if (n < 3L) return(matrix(NA_real_, nrow = ncol(host_mat),
-                              ncol = ncol(mb_mat)))
+  # Pearson correlation of ranks = Spearman correlation
+  n <- nrow(host_mat)
+  if (n < 3L) {
+    return(matrix(NA_real_,
+      nrow = ncol(host_mat),
+      ncol = ncol(mb_mat)
+    ))
+  }
 
-    host_scaled <- scale(host_ranks)
-    mb_scaled   <- scale(mb_ranks)
+  host_scaled <- scale(host_ranks)
+  mb_scaled <- scale(mb_ranks)
 
-    cor_mat <- crossprod(host_scaled, mb_scaled) / (n - 1L)
-    rownames(cor_mat) <- colnames(host_mat)
-    colnames(cor_mat) <- colnames(mb_mat)
-    cor_mat
+  cor_mat <- crossprod(host_scaled, mb_scaled) / (n - 1L)
+  rownames(cor_mat) <- colnames(host_mat)
+  colnames(cor_mat) <- colnames(mb_mat)
+  cor_mat
 }
 
 # ── Classification helpers ────────────────────────────────────────────────────
@@ -111,15 +115,14 @@
 #' @keywords internal
 #' @noRd
 .stratifiedFolds <- function(outcome, k = 5L, seed = 42L) {
-    set.seed(seed)
-    outcome_f <- factor(outcome)
-    fold_ids  <- integer(length(outcome))
-    for (lv in levels(outcome_f)) {
-        idx  <- which(outcome_f == lv)
-        fids <- sample(rep(seq_len(k), length.out = length(idx)))
-        fold_ids[idx] <- fids
-    }
-    fold_ids
+  outcome_f <- factor(outcome)
+  fold_ids <- integer(length(outcome))
+  for (lv in levels(outcome_f)) {
+    idx <- which(outcome_f == lv)
+    fids <- sample(rep(seq_len(k), length.out = length(idx)))
+    fold_ids[idx] <- fids
+  }
+  fold_ids
 }
 
 #' Train a ranger Random Forest and return OOB AUC
@@ -134,58 +137,61 @@
 #'
 #' @importFrom ranger ranger
 #' @importFrom pROC roc auc
+#' @importFrom stats predict sd
 #'
 #' @keywords internal
 #' @noRd
 .cvRandomForest <- function(feature_mat, outcome, fold_ids, seed = 42L) {
-    k        <- max(fold_ids)
-    auc_vals <- numeric(k)
-    roc_last <- NULL
-    outcome_f <- factor(outcome)
-    pos_class <- levels(outcome_f)[2L]
+  k <- max(fold_ids)
+  auc_vals <- numeric(k)
+  roc_last <- NULL
+  outcome_f <- factor(outcome)
+  pos_class <- levels(outcome_f)[2L]
 
-    for (f in seq_len(k)) {
-        train_idx <- fold_ids != f
-        test_idx  <- fold_ids == f
+  for (f in seq_len(k)) {
+    train_idx <- fold_ids != f
+    test_idx <- fold_ids == f
 
-        if (sum(train_idx) < 4L || sum(test_idx) < 2L) {
-            auc_vals[f] <- NA_real_
-            next
-        }
-
-        train_df <- as.data.frame(feature_mat[train_idx, , drop = FALSE])
-        test_df  <- as.data.frame(feature_mat[test_idx,  , drop = FALSE])
-        train_df[[".__outcome__."]] <- outcome_f[train_idx]
-
-        rf_fit <- ranger::ranger(
-            formula   = .__outcome__. ~ .,
-            data      = train_df,
-            num.trees = 500L,
-            probability = TRUE,
-            seed      = seed + f,
-            verbose   = FALSE
-        )
-
-        pred    <- predict(rf_fit, data = test_df)$predictions
-        pred_p  <- pred[, pos_class]
-        true_y  <- outcome_f[test_idx]
-
-        roc_obj    <- pROC::roc(response  = true_y,
-                                predictor = pred_p,
-                                levels    = levels(outcome_f),
-                                direction = "<",
-                                quiet     = TRUE)
-        auc_vals[f] <- as.numeric(pROC::auc(roc_obj))
-        if (f == k) roc_last <- roc_obj
+    if (sum(train_idx) < 4L || sum(test_idx) < 2L) {
+      auc_vals[f] <- NA_real_
+      next
     }
 
-    auc_vals_clean <- auc_vals[!is.na(auc_vals)]
-    list(
-        mean_auc = mean(auc_vals_clean),
-        sd_auc   = if (length(auc_vals_clean) > 1L) sd(auc_vals_clean) else 0,
-        fold_auc = auc_vals,
-        roc_data = roc_last
+    train_df <- as.data.frame(feature_mat[train_idx, , drop = FALSE])
+    test_df <- as.data.frame(feature_mat[test_idx, , drop = FALSE])
+    train_df[[".__outcome__."]] <- outcome_f[train_idx]
+
+    rf_fit <- ranger::ranger(
+      formula = .__outcome__. ~ .,
+      data = train_df,
+      num.trees = 500L,
+      probability = TRUE,
+      seed = seed + f,
+      verbose = FALSE
     )
+
+    pred <- predict(rf_fit, data = test_df)$predictions
+    pred_p <- pred[, pos_class]
+    true_y <- outcome_f[test_idx]
+
+    roc_obj <- pROC::roc(
+      response = true_y,
+      predictor = pred_p,
+      levels = levels(outcome_f),
+      direction = "<",
+      quiet = TRUE
+    )
+    auc_vals[f] <- as.numeric(pROC::auc(roc_obj))
+    if (f == k) roc_last <- roc_obj
+  }
+
+  auc_vals_clean <- auc_vals[!is.na(auc_vals)]
+  list(
+    mean_auc = mean(auc_vals_clean),
+    sd_auc   = if (length(auc_vals_clean) > 1L) sd(auc_vals_clean) else 0,
+    fold_auc = auc_vals,
+    roc_data = roc_last
+  )
 }
 
 # ── DIABLO helpers ────────────────────────────────────────────────────────────
@@ -201,12 +207,12 @@
 #' @keywords internal
 #' @noRd
 .extractScores <- function(diablo_res, which_block = "host") {
-    variates <- diablo_res[["variates"]]
-    if (which_block %in% names(variates)) {
-        variates[[which_block]]
-    } else {
-        variates[[1L]]
-    }
+  variates <- diablo_res[["variates"]]
+  if (which_block %in% names(variates)) {
+    variates[[which_block]]
+  } else {
+    variates[[1L]]
+  }
 }
 
 #' Extract feature loadings from DIABLO result
@@ -219,12 +225,12 @@
 #' @keywords internal
 #' @noRd
 .extractLoadings <- function(diablo_res, block_name) {
-    loadings <- diablo_res[["loadings"]]
-    if (block_name %in% names(loadings)) {
-        loadings[[block_name]]
-    } else {
-        matrix(nrow = 0L, ncol = 0L)
-    }
+  loadings <- diablo_res[["loadings"]]
+  if (block_name %in% names(loadings)) {
+    loadings[[block_name]]
+  } else {
+    matrix(nrow = 0L, ncol = 0L)
+  }
 }
 
 #' Build ranked biomarker DataFrame from loadings
@@ -240,33 +246,36 @@
 #' @keywords internal
 #' @noRd
 .rankBiomarkers <- function(host_loadings, mb_loadings, n_biomarkers = 50L) {
-    .rank_layer <- function(loadings, layer_name) {
-        if (nrow(loadings) == 0L || ncol(loadings) == 0L)
-            return(data.frame())
-
-        # Combined loading score: sqrt sum of squares across components
-        scores <- sqrt(rowSums(loadings^2))
-        top_n  <- min(n_biomarkers, length(scores))
-        ord    <- order(scores, decreasing = TRUE)[seq_len(top_n)]
-
-        # Find which component has the highest absolute loading per gene
-        best_comp <- apply(abs(loadings), 1L, which.max)
-
-        data.frame(
-            feature      = rownames(loadings)[ord],
-            omics_layer  = layer_name,
-            loading_score = scores[ord],
-            rank         = seq_len(top_n),
-            component    = best_comp[ord],
-            stringsAsFactors = FALSE
-        )
+  .rank_layer <- function(loadings, layer_name) {
+    if (nrow(loadings) == 0L || ncol(loadings) == 0L) {
+      return(data.frame())
     }
 
-    host_df <- .rank_layer(host_loadings, "host")
-    mb_df   <- .rank_layer(mb_loadings,   "microbiome")
-    combined <- rbind(host_df, mb_df)
+    # Combined loading score: sqrt sum of squares across components
+    scores <- sqrt(rowSums(loadings^2))
+    top_n <- min(n_biomarkers, length(scores))
+    ord <- order(scores, decreasing = TRUE)[seq_len(top_n)]
 
-    if (nrow(combined) == 0L) return(S4Vectors::DataFrame())
+    # Find which component has the highest absolute loading per gene
+    best_comp <- apply(abs(loadings), 1L, which.max)
 
-    S4Vectors::DataFrame(combined)
+    data.frame(
+      feature = rownames(loadings)[ord],
+      omics_layer = layer_name,
+      loading_score = scores[ord],
+      rank = seq_len(top_n),
+      component = best_comp[ord],
+      stringsAsFactors = FALSE
+    )
+  }
+
+  host_df <- .rank_layer(host_loadings, "host")
+  mb_df <- .rank_layer(mb_loadings, "microbiome")
+  combined <- rbind(host_df, mb_df)
+
+  if (nrow(combined) == 0L) {
+    return(S4Vectors::DataFrame())
+  }
+
+  S4Vectors::DataFrame(combined)
 }

@@ -89,6 +89,7 @@
 #' @importFrom SummarizedExperiment assay assayNames
 #' @importFrom mixOmics block.splsda
 #' @importFrom methods is
+#' @importFrom stats quantile
 #' @export
 jointDimReduction <- function(mae,
                                outcome,

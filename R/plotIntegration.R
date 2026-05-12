@@ -48,10 +48,11 @@
 #'   \code{\link{plotClassifierComparison}}
 #'
 #' @importFrom ggplot2 ggplot aes geom_point geom_segment geom_text
-#'   scale_color_manual scale_color_brewer labs theme_bw theme
-#'   element_text element_blank geom_hline geom_vline
+#' @importFrom ggplot2 scale_color_manual scale_color_brewer labs theme_bw theme
+#' @importFrom ggplot2 element_text element_blank geom_hline geom_vline
 #' @importFrom methods is
 #' @importFrom utils head
+#' @importFrom stats setNames
 #' @export
 plotIntegration <- function(result,
                              comp             = c(1L, 2L),
