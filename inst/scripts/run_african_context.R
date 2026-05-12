@@ -135,23 +135,33 @@ if (USE_REAL_TB && requireNamespace("GEOquery", quietly = TRUE)) {
         expr_tb <- exprs(gse_tb)[, keep_tb, drop = FALSE]
         cond_tb <- condition_tb[keep_tb]
 
-        # Convert from log2 if needed
-        if (max(expr_tb, na.rm = TRUE) < 25)
-            expr_tb <- 2^expr_tb
-        expr_tb <- round(pmax(expr_tb, 0))
-        storage.mode(expr_tb) <- "integer"
-        colnames(expr_tb) <- paste0("TB_S", seq_len(ncol(expr_tb)))
+        if (nrow(expr_tb) > 0) {
+            # Convert from log2 if needed
+            if (max(expr_tb, na.rm = TRUE) < 25)
+                expr_tb <- 2^expr_tb
+            expr_tb <- round(pmax(expr_tb, 0))
+            storage.mode(expr_tb) <- "integer"
+            colnames(expr_tb) <- paste0("TB_S", seq_len(ncol(expr_tb)))
 
-        tb_col_data <- data.frame(
-            condition = cond_tb,
-            row.names = colnames(expr_tb)
-        )
+            tb_col_data <- data.frame(
+                condition = cond_tb,
+                row.names = colnames(expr_tb)
+            )
+            
+            # Ensure rownames are present
+            if (is.null(rownames(expr_tb))) {
+                rownames(expr_tb) <- paste0("Gene_", seq_len(nrow(expr_tb)))
+            }
 
-        host_se_tb <- loadHostData(expr_tb, col_data = tb_col_data,
-                                    min_count = 5L)
-        cat("Host SummarizedExperiment (REAL GEO DATA — GSE79362):\n")
-        print(host_se_tb)
-        USE_REAL_TB <- TRUE
+            host_se_tb <- loadHostData(expr_tb, col_data = tb_col_data,
+                                        min_count = 5L)
+            cat("Host SummarizedExperiment (REAL GEO DATA — GSE79362):\n")
+            print(host_se_tb)
+            USE_REAL_TB <- TRUE
+        } else {
+            cat("GEO series matrix contains no expression data. Falling back to simulated TB data.\n")
+            USE_REAL_TB <- FALSE
+        }
     } else {
         USE_REAL_TB <- FALSE
     }

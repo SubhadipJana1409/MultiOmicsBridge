@@ -66,6 +66,7 @@ suppressPackageStartupMessages({
     library(MultiAssayExperiment)
     library(S4Vectors)
     library(ggplot2)
+    library(ggrepel)
 })
 
 # Output directory for plots and report
