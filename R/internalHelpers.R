@@ -53,14 +53,14 @@
 #' @return A list with \code{E} (voom log2-CPM matrix) and
 #'   \code{weights} (observation-level precision weights).
 #'
-#' @importFrom edgeR DGEList calcNormFactors
+#' @importFrom edgeR DGEList normLibSizes
 #' @importFrom limma voom
 #'
 #' @keywords internal
 #' @noRd
 .voomNormalize <- function(counts, design = NULL) {
   dge <- edgeR::DGEList(counts = counts)
-  dge <- edgeR::calcNormFactors(dge, method = "TMM")
+  dge <- edgeR::normLibSizes(dge, method = "TMM")
   v <- limma::voom(dge, design = design, plot = FALSE)
   list(E = v$E, weights = v$weights)
 }

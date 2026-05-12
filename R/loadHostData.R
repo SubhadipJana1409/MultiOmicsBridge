@@ -11,7 +11,7 @@
 #' \enumerate{
 #'   \item Construct a \code{DGEList} from raw counts.
 #'   \item Apply TMM (trimmed mean of M-values) normalization via
-#'     \code{edgeR::calcNormFactors} to remove compositional bias
+#'     \code{edgeR::normLibSizes} to remove compositional bias
 #'     between libraries.
 #'   \item Apply \code{limma::voom} to compute log2-CPM values with
 #'     precision weights that model the mean-variance trend. These
@@ -69,7 +69,7 @@
 #'
 #' @importFrom SummarizedExperiment SummarizedExperiment assay assayNames
 #' @importFrom S4Vectors DataFrame
-#' @importFrom edgeR DGEList calcNormFactors
+#' @importFrom edgeR DGEList normLibSizes
 #' @importFrom limma voom
 #' @importFrom methods is
 #' @export

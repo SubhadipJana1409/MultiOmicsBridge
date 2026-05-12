@@ -209,6 +209,42 @@ The `MultiOmicsBridge` pipeline has been robustly tested and validated on comple
 - **Microbiome Data**: **Real** published stool metagenomics data (`HMP_2019_ibdmdb`)
 - **Validation Value**: Demonstrated the package's ability to effectively integrate noisy, real-world microbiome measurements (using correct CLR normalization) with structured host data to build high-accuracy classification models.
 
+### Context D — Real GEO Host RNA-seq + Real IBD Microbiome
+- **Samples**: 108 condition-matched samples (UC = 87, Control = 21)
+- **Host Data**: **Real** transcriptomics from rectal biopsies (GEO `GSE87466`, Vanhove et al. 2018)
+- **Microbiome Data**: **Real** published stool metagenomics data (`HMP_2019_ibdmdb`)
+- **Validation Value**: Showcases the framework's capability to ingest complex, real-world data from both modalities, aligning entirely independent real datasets by clinical condition. 
+- **Performance**: Host-only AUC: `1.000`, Microbiome-only AUC: `0.763`, Joint AUC: `1.000`.
+
+<details>
+<summary><strong>View Real GEO + IBDMDB Visualizations</strong></summary>
+
+![GEO Integration](man/figures/geo_integration.png)
+*Integration Biplot separating UC from Control using fully real transcriptomics and microbiome data.*
+
+![GEO Classifier Comparison](man/figures/geo_classifier.png)
+*Classifier Comparison showing AUCs for single vs joint models.*
+
+![GEO Biomarker Network](man/figures/geo_network.png)
+*Cross-omics network showing correlations between host genes and microbial taxa.*
+
+![GEO Sankey Flow](man/figures/geo_sankey.png)
+*Sankey diagram showing multi-omics flow from top predictive microbial taxa to host genes.*
+</details>
+
+### Performance Benchmark
+The package includes a comprehensive benchmarking suite (`run_benchmark.R`) to evaluate computational efficiency, reproducibility, and signal recovery across multiple random seeds and sample sizes.
+- **AUC Consistency**: The joint multi-omics model consistently matches or outperforms single-omics baselines across random seed iterations.
+- **Signal Recovery**: Successfully recovers >50% of injected host signals and 100% of injected microbiome signals.
+- **Computational Efficiency**: The entire framework scales linearly and extremely efficiently, processing 120 paired samples (800 genes × 60 taxa) through 3-fold cross-validation in under 1 second.
+
+<details>
+<summary><strong>View Benchmark Visualizations</strong></summary>
+
+![Benchmark Scaling](man/figures/benchmark_scaling.png)
+*Runtime scaling demonstrating highly efficient computation as sample sizes increase.*
+</details>
+
 ## Example Visualizations
 
 MultiOmicsBridge automatically generates five publication-ready visualizations to help you interpret the multi-omics integration and classification results.
