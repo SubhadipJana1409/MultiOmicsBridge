@@ -181,12 +181,12 @@ generateReport <- function(result, file = NULL, n_top = 10L) {
 
     # ── Print ─────────────────────────────────────────────────────────────────
     all_lines <- unlist(lines)
-    message(paste(all_lines, collapse = "\n"))
+    cat(paste(all_lines, collapse = "\n"), "\n")
 
     # ── Optional file save ────────────────────────────────────────────────────
     if (!is.null(file)) {
         writeLines(all_lines, con = file)
-        message("Report saved to: ", file)
+        cat("Report saved to: ", file, "\n")
     }
 
     invisible(lines)
