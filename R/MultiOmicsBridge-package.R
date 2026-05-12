@@ -62,12 +62,12 @@
 #'     the complete analysis pipeline.}
 #' }
 #'
-#' @section African health context:
-#' The package is designed with African health priorities in mind and
+#' @section Complex disease contexts:
+#' The package is designed as a generalized framework and
 #' validated on tuberculosis, HIV antiretroviral therapy, and inflammatory
 #' bowel disease datasets. By providing a standardized, accessible
 #' workflow, MultiOmicsBridge lowers the barrier to multi-omics integration
-#' for researchers working on underrepresented populations and disease
+#' for researchers working across various disease
 #' contexts.
 #'
 #' @references

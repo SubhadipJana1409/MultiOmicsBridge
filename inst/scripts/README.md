@@ -74,11 +74,11 @@ portal download (see instructions in that script).
 
 ---
 
-### `run_african_context.R`
-Validates MultiOmicsBridge in two African disease contexts:
+### `run_disease_context.R`
+Validates MultiOmicsBridge in two complex disease contexts:
 
 **Context A — Tuberculosis**
-- Host: GEO GSE79362 (Maertzdorf et al. 2016, South African TB cohort)
+- Host: GEO GSE79362 (Maertzdorf et al. 2016, TB clinical cohort)
   — 298 blood transcriptomics samples (Active TB, Latent TB, Healthy)
 - Microbiome: Simulated TB gut dysbiosis (Luo et al. 2017, Lu et al. 2021)
 - Tests: Active TB vs Healthy classification
@@ -89,7 +89,7 @@ Validates MultiOmicsBridge in two African disease contexts:
 - Tests: ART Responder vs Non-Responder classification
 
 ```r
-source("inst/scripts/run_african_context.R")
+source("inst/scripts/run_disease_context.R")
 # Runtime: ~20-30 minutes (GEO download for TB + analyses)
 ```
 
@@ -155,7 +155,7 @@ plotClassifierComparison(result, type = "bar")
 ```
 1. make_example_data.R         # Always run first — creates extdata
 2. run_ibdmdb_demo.R           # Primary real-data validation
-3. run_african_context.R       # African disease context validation
+3. run_disease_context.R       # Complex disease context validation
 4. run_geo_host_data.R         # Full real-data (both layers from public repos)
 5. run_benchmark.R             # Performance characterization
 ```
@@ -168,7 +168,7 @@ All required Bioconductor packages:
 BiocManager::install(c(
     "MultiOmicsBridge",           # this package
     "curatedMetagenomicData",     # for run_ibdmdb_demo.R
-    "GEOquery",                   # for run_geo_host_data.R + run_african_context.R
+    "GEOquery",                   # for run_geo_host_data.R + run_disease_context.R
     "SummarizedExperiment",
     "MultiAssayExperiment",
     "limma", "edgeR", "mixOmics", # core dependencies

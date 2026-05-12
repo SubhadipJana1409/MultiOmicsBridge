@@ -1,15 +1,15 @@
 # ============================================================================
-# inst/scripts/run_african_context.R
+# inst/scripts/run_disease_context.R
 #
-# MultiOmicsBridge validation in African disease contexts.
-# Demonstrates the package's relevance to African health priorities as
+# MultiOmicsBridge validation in complex disease contexts.
+# Demonstrates the package's relevance to complex health priorities as
 # described in the project proposal.
 #
 # DATASETS DEMONSTRATED:
 #
 #   Context A — TUBERCULOSIS (REAL host data, simulated microbiome)
-#     Host RNA-seq : GEO GSE79362 — Blood transcriptomics from South African
-#                   TB patients (Maertzdorf et al. 2016, Sci Rep 6:23299)
+#     Host RNA-seq : GEO GSE79362 — Blood transcriptomics from a clinical
+#                   TB cohort (Maertzdorf et al. 2016, Sci Rep 6:23299)
 #                   298 samples: Active TB, Latent TB, Healthy controls
 #     Microbiome   : Biologically realistic simulation based on published
 #                   TB-associated gut dysbiosis patterns
@@ -20,7 +20,7 @@
 #     using known HIV-associated transcriptional and microbiome signatures
 #
 # BIOLOGICAL BACKGROUND:
-#   - TB: ~25% of global burden in Africa. Gut-lung axis increasingly
+#   - TB: Gut-lung axis increasingly
 #     recognized; gut dysbiosis correlates with TB severity and treatment
 #     response (impaired butyrate production by Firmicutes)
 #   - HIV/ART: Gut microbiome dramatically altered by HIV; ART partially
@@ -30,13 +30,13 @@
 #
 # USAGE:
 #   # Full script:
-#   source("inst/scripts/run_african_context.R")
+#   source("inst/scripts/run_disease_context.R")
 #   # TB context only (no internet required if simulating microbiome):
-#   source("inst/scripts/run_african_context.R")
+#   source("inst/scripts/run_disease_context.R")
 # ============================================================================
 
 cat("============================================================\n")
-cat("  MultiOmicsBridge — African Disease Context Demo\n")
+cat("  MultiOmicsBridge — Complex Disease Context Demo\n")
 cat("  Tuberculosis & HIV | Blood Transcriptomics + Microbiome\n")
 cat("============================================================\n\n")
 
@@ -75,7 +75,7 @@ t0 <- Sys.time()
 
 cat("╔════════════════════════════════════════════════════════════╗\n")
 cat("║  CONTEXT A: TUBERCULOSIS                                   ║\n")
-cat("║  South African TB cohort (GEO: GSE79362)                   ║\n")
+cat("║  TB clinical cohort (GEO: GSE79362)                        ║\n")
 cat("╚════════════════════════════════════════════════════════════╝\n\n")
 
 # ── A1. Download GSE79362 TB blood transcriptomics ────────────────────────────
@@ -570,10 +570,10 @@ cat(sprintf("HIV plots saved to: %s\n", outdir))
 elapsed_total <- as.numeric(Sys.time() - t0, units = "secs")
 
 cat("\n============================================================\n")
-cat("  AFRICAN CONTEXT VALIDATION SUMMARY\n")
+cat("  COMPLEX DISEASE CONTEXT VALIDATION SUMMARY\n")
 cat("============================================================\n\n")
 
-cat("Context A — Tuberculosis (South African cohort)\n")
+cat("Context A — Tuberculosis (Clinical cohort)\n")
 cat(sprintf("  Samples          : %d (ActiveTB=%d, Healthy=%d)\n",
             ncol(mae_tb),
             sum(outcome_tb == "ActiveTB"),
@@ -598,7 +598,7 @@ cat(sprintf("  Multi-omics gain : +%.3f vs host-only\n",
 cat(sprintf("\nTotal runtime : %.1f seconds\n", elapsed_total))
 cat(sprintf("Output dir    : %s\n", outdir))
 cat("\n============================================================\n")
-cat("  PASS — MultiOmicsBridge validated in African disease\n")
+cat("  PASS — MultiOmicsBridge validated in complex disease\n")
 cat("         contexts (TB and HIV/ART response)\n")
 cat("============================================================\n")
 

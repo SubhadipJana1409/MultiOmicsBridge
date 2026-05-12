@@ -144,10 +144,9 @@ biomarkers(result)         # DataFrame: feature, layer, loading_score, cross-cor
 performance(result)        # list: host_only, microbiome_only, joint AUC
 ```
 
-## African Health Context
+## Complex Disease Contexts
 
-MultiOmicsBridge is designed with African health priorities in mind and
-validated on three disease contexts:
+MultiOmicsBridge is designed as a generalized framework and has been validated across three distinct, complex disease contexts:
 
 | Disease | Dataset | Host | Microbiome |
 |---|---|---|---|
@@ -155,11 +154,10 @@ validated on three disease contexts:
 | Tuberculosis | GEO: GSE79362 | Real (blood RNA-seq) | Simulated (TB dysbiosis) |
 | HIV/ART | Published signatures | Simulated | Simulated |
 
-Africa carries ~25% of the global TB burden, and gut-lung axis interactions
-are increasingly recognized as relevant to TB progression and treatment
+Gut-lung axis interactions are increasingly recognized as relevant to TB progression and treatment
 response. For HIV/ART, gut microbiome composition is a significant predictor
 of immune reconstitution. MultiOmicsBridge provides a standardized,
-accessible tool for these analyses in resource-limited research settings.
+accessible tool for these analyses in diverse research settings.
 
 ## Validation scripts
 
@@ -168,8 +166,8 @@ accessible tool for these analyses in resource-limited research settings.
 source(system.file("scripts", "run_ibdmdb_demo.R",
                     package = "MultiOmicsBridge"))
 
-# African disease contexts (TB + HIV, ~20-30 min)
-source(system.file("scripts", "run_african_context.R",
+# Complex disease contexts (TB + HIV, ~20-30 min)
+source(system.file("scripts", "run_disease_context.R",
                     package = "MultiOmicsBridge"))
 
 # Performance benchmark
@@ -181,7 +179,7 @@ source(system.file("scripts", "run_benchmark.R",
 
 The `MultiOmicsBridge` pipeline has been robustly tested and validated on complex multi-omics datasets to demonstrate its diagnostic capability and biological relevance.
 
-### Context A — Tuberculosis (South African Cohort)
+### Context A — Tuberculosis (Clinical Cohort)
 - **Samples**: 60 (Active TB = 30, Healthy = 30)
 - **Host Data**: Simulated (based on Maertzdorf et al. 2016 and Berry et al. 2010 signatures)
 - **Microbiome Data**: Simulated (TB dysbiosis signatures based on Luo et al. 2017 and Lu et al. 2021)

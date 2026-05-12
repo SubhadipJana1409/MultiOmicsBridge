@@ -343,12 +343,12 @@ result <- MultiOmicsBridgeAnalysis(mae, outcome = sample_metadata$diagnosis)
 result
 ```
 
-## African disease contexts
+## Complex disease contexts
 
-MultiOmicsBridge is designed with African health priorities in mind.
+MultiOmicsBridge is designed to generalize to complex disease contexts.
 For tuberculosis studies (e.g. GEO: GSE79362), the same workflow applies:
 
-```{r african_context, eval=FALSE}
+```{r disease_context, eval=FALSE}
 # TB study: blood RNA-seq + sputum microbiome
 host_se <- loadHostData(blood_counts, col_data = patient_metadata)
 mb_se   <- loadMicrobiomeData(sputum_taxa, normalization = "CLR")

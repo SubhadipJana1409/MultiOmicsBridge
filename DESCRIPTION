@@ -24,7 +24,7 @@ Description:
     feature flow diagrams. All functions operate natively on
     SummarizedExperiment and MultiAssayExperiment objects and return a
     structured MOBResult S4 object. The package is validated on
-    inflammatory bowel disease multi-omics data and designed with African
+    inflammatory bowel disease multi-omics data and designed with complex
     disease contexts (tuberculosis, HIV, EED) in mind.
 License: MIT + file LICENSE
 URL: https://github.com/SubhadipJana1409/MultiOmicsBridge
