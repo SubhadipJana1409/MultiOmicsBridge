@@ -2,7 +2,7 @@ Package: MultiOmicsBridge
 Type: Package
 Title: Integrative Multi-Omics Analysis of Host Transcriptomics and Gut
     Microbiome Data
-Version: 0.99.0
+Version: 0.99.1
 Authors@R: c(
     person("Subhadip", "Jana", role = c("aut", "cre", "fnd"),
            email = "subhadipjana1409@gmail.com",
@@ -18,7 +18,7 @@ Description:
     reduction via sparse multi-block PLS-DA (DIABLO); (3) multi-omics
     biomarker discovery through cross-omics correlation networks and sparse
     feature loadings; (4) integrated diagnostic classification comparing
-    host-only, microbiome-only, and joint Random Forest models with nested
+    host-only, microbiome-only, and joint Random Forest models with stratified
     cross-validation; and (5) publication-quality visualization of
     integration results, biomarker networks, classifier comparisons, and
     feature flow diagrams. All functions operate natively on

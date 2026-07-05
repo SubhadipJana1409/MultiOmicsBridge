@@ -8,4 +8,6 @@
 ^\.Rproj\.user$
 ^\.positai$
 ^\.claude$
+^\.antigravitycli$
+^\.Rhistory$
 ^single_commits\.ps1$

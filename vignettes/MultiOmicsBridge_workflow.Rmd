@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
     comment   = "#>",
     fig.width = 7,
     fig.height = 5,
-    message   = TRUE,
+    message   = FALSE,
     warning   = FALSE
 )
 ```
@@ -108,8 +108,9 @@ col_data <- data.frame(
     row.names = paste0("Sample", seq_len(n_samples))
 )
 
-cat(sprintf("Host:       %d genes × %d samples\n", nrow(host_counts), ncol(host_counts)))
-cat(sprintf("Microbiome: %d taxa  × %d samples\n", nrow(mb_counts), ncol(mb_counts)))
+# Simulated data dimensions
+dim(host_counts)
+dim(mb_counts)
 ```
 
 # Module 1: Data Harmonization
@@ -138,9 +139,8 @@ mb_se <- loadMicrobiomeData(mb_counts, normalization = "CLR",
 mb_se
 assayNames(mb_se)
 
-# Verify CLR: each sample should have zero mean
-cat("Column means of CLR matrix (should be ≈ 0):\n")
-print(round(colMeans(assay(mb_se, "CLR")), 10)[1:5])
+# Verify CLR: column means should be ≈ 0
+round(colMeans(assay(mb_se, "CLR")), 10)[1:5]
 ```
 
 ## Step 1.3 — Match paired samples
@@ -177,11 +177,15 @@ dr_result <- jointDimReduction(
     design_off_diag = 0.1
 )
 
-cat("Score matrix dimensions:", dim(dr_result$scores), "\n")
-cat("Host loading matrix dimensions:", dim(dr_result$host_loadings), "\n")
-cat("Microbiome loading matrix dimensions:", dim(dr_result$mb_loadings), "\n")
-cat("\nExplained variance per component:\n")
-print(round(dr_result$explained_variance, 4))
+# Score matrix dimensions
+dim(dr_result$scores)
+
+# Loading matrix dimensions (host, microbiome)
+dim(dr_result$host_loadings)
+dim(dr_result$mb_loadings)
+
+# Explained variance per component
+round(dr_result$explained_variance, 4)
 ```
 
 # Module 3: Biomarker Discovery
@@ -203,21 +207,21 @@ head(bm_df_sorted[, c("feature","omics_layer","loading_score",
 ```
 
 ```{r biomarker_summary}
+# Biomarker counts by omics layer
 n_host <- sum(bm_df$omics_layer == "host")
 n_mb   <- sum(bm_df$omics_layer == "microbiome")
-cat(sprintf("Host biomarkers     : %d\n", n_host))
-cat(sprintf("Microbiome biomarkers: %d\n", n_mb))
+c(host = n_host, microbiome = n_mb)
 
-# Are the injected genes recovered?
+# Are the injected signal genes recovered?
 injected <- paste0("Gene", seq_len(20))
 detected <- intersect(bm_df$feature, injected)
-cat(sprintf("Injected genes recovered: %d / 20\n", length(detected)))
+length(detected)  # out of 20 injected
 ```
 
 # Module 4: Diagnostic Classification
 
-`diagnosticClassifier()` trains three Random Forest models using nested
-cross-validation and compares their AUC-ROC values. This comparison
+`diagnosticClassifier()` trains three Random Forest models using stratified
+k-fold cross-validation and compares their AUC-ROC values. This comparison
 directly quantifies the added diagnostic value of multi-omics integration.
 
 ```{r classifier}
@@ -229,15 +233,17 @@ clf_results <- diagnosticClassifier(
     seed            = 42L
 )
 
-cat("Classifier AUC-ROC (mean ± SD across 5-fold CV):\n")
-for (nm in c("host_only", "microbiome_only", "joint")) {
-    r <- clf_results[[nm]]
-    cat(sprintf("  %-22s  %.3f ± %.3f\n",
-                paste0(nm, ":"), r$mean_auc, r$sd_auc))
-}
+# Classifier AUC-ROC (mean ± SD across 5-fold CV)
+models <- c("host_only", "microbiome_only", "joint")
+data.frame(
+    Model    = models,
+    Mean_AUC = vapply(models, function(m) clf_results[[m]]$mean_auc, numeric(1)),
+    SD_AUC   = vapply(models, function(m) clf_results[[m]]$sd_auc,   numeric(1))
+)
 
+# AUC gain: multi-omics vs. host-only
 delta <- clf_results$joint$mean_auc - clf_results$host_only$mean_auc
-cat(sprintf("\nMulti-omics gain vs host-only: +%.3f AUC\n", delta))
+round(delta, 3)
 ```
 
 # Full Pipeline with One Call
@@ -272,12 +278,19 @@ head(as.data.frame(biomarkers(result))[, c("feature","omics_layer",
 
 # Classifier performance
 perf <- performance(result)
-cat(sprintf("Joint AUC: %.3f\n", perf$joint$mean_auc))
+# Joint classifier AUC
+round(perf$joint$mean_auc, 3)
 ```
 
 # Module 5: Visualization
 
 ## Joint integration biplot
+
+The integration biplot projects all samples onto the first two DIABLO latent
+variates. Points are colored by outcome group, and arrow overlays show the top
+contributing features from each omics layer. Clear separation between groups
+along Component 1 indicates that DIABLO has identified a discriminant axis,
+while the loading arrows reveal which genes and taxa drive that separation.
 
 ```{r plot_integration, fig.cap="DIABLO sample scores coloured by outcome group. Loading vectors show the top contributing features per omics layer."}
 plotIntegration(result, outcome = outcome, n_loading_arrows = 5)
@@ -285,11 +298,25 @@ plotIntegration(result, outcome = outcome, n_loading_arrows = 5)
 
 ## Cross-omics biomarker network
 
+The cross-omics correlation heatmap displays Spearman rank correlations between
+the top-ranked host genes (rows) and microbial taxa (columns). Rows and columns
+are reordered by hierarchical clustering to group features with similar
+correlation profiles. Tiles colored toward red indicate strong positive
+correlations; blue tiles indicate inverse relationships. Features with
+consistently strong cross-omics correlations are candidate mediators of
+host--microbe interactions.
+
 ```{r plot_network, fig.cap="Clustered heatmap of Spearman correlations between the top host genes and microbial taxa. Strong positive/negative correlations indicate candidate host-microbe interactions."}
 plotBiomarkerNetwork(result, mae, n_host = 15, n_mb = 10)
 ```
 
 ## Classifier comparison (bar chart)
+
+The classifier comparison bar chart displays the mean AUC-ROC ± standard
+deviation from 5-fold cross-validation for host-only, microbiome-only, and
+joint classifiers. Comparing the three models side by side directly quantifies
+the diagnostic gain from multi-omics integration. Higher bars indicate stronger
+discriminative power; overlapping error bars suggest no significant difference.
 
 ```{r plot_bar, fig.cap="Mean cross-validated AUC-ROC for host-only, microbiome-only, and joint classifiers. The multi-omics advantage is immediately visible."}
 plotClassifierComparison(result, type = "bar")
@@ -297,17 +324,34 @@ plotClassifierComparison(result, type = "bar")
 
 ## Classifier comparison (ROC curves)
 
+Overlaid ROC curves from the last cross-validation fold illustrate the
+sensitivity--specificity trade-off for each classifier configuration. A curve
+closer to the top-left corner indicates better classification performance.
+Comparing curves visually reveals whether the joint model consistently
+outperforms single-omics classifiers across all operating points.
+
 ```{r plot_roc, fig.cap="Overlaid ROC curves from the last cross-validation fold for each classifier configuration."}
 plotClassifierComparison(result, type = "roc")
 ```
 
 ## Feature flow (Sankey) diagram
 
+The Sankey (alluvial) diagram traces individual features from their omics layer
+of origin, through the biomarker selection step, to the outcome classes they
+help distinguish. Edge width is proportional to the DIABLO loading score, so
+wider flows represent more influential features. This visualization illustrates
+how MultiOmicsBridge "bridges" information across host and microbiome data
+types.
+
 ```{r plot_sankey, fig.cap="Feature flow from omics layer through selected biomarkers to outcome classes. Edge width is proportional to loading score."}
 plotSankey(result, n_features = 8)
 ```
 
 ## Structured text report
+
+The `generateReport()` function produces a structured text summary of all
+analysis results, suitable for inclusion in supplementary materials or quick
+review of the integrated analysis outcomes.
 
 ```{r report}
 generateReport(result, n_top = 8)
@@ -396,7 +440,37 @@ A key scientific contribution of every multi-omics study is demonstrating
 that integrating two data types improves diagnostic performance over either
 alone. `diagnosticClassifier()` makes this comparison automatic and
 transparent, following best practices from clinical prediction modelling:
-nested cross-validation with stratified folds to avoid overfitting bias.
+stratified k-fold cross-validation to estimate predictive performance.
+
+# References
+
+- Aitchison J (1986). _The Statistical Analysis of Compositional Data_.
+  Chapman & Hall.
+- Breiman L (2001). "Random Forests." _Machine Learning_, 45, 5--32.
+- Franzosa EA, Sirota-Madi A, Avila-Pacheco J et al. (2019). "Gut
+  microbiome structure and metabolic activity in inflammatory bowel
+  disease." _Nature Microbiology_, 4, 293--305.
+- Law CW, Chen Y, Shi W, Smyth GK (2014). "voom: Precision weights
+  unlock linear model analysis tools for RNA-seq read counts."
+  _Genome Biology_, 15, R29.
+- Ramos M, Schiffer L, Re A et al. (2017). "Software for the
+  Integration of Multiomics Experiments in Bioconductor."
+  _Cancer Research_, 77(21), e39--e42.
+- Robinson MD, Oshlack A (2010). "A scaling normalization method for
+  differential expression analysis of RNA-seq data." _Genome Biology_,
+  11, R25.
+- Robin X, Turck N, Hainard A et al. (2011). "pROC: an open-source
+  package for R and S+ to analyze and compare ROC curves." _BMC
+  Bioinformatics_, 12, 77.
+- Rohart F, Gautier B, Singh A, Le Cao KA (2017). "mixOmics: An R
+  package for omics feature selection and multiple data integration."
+  _PLoS Computational Biology_, 13(11), e1005752.
+- Singh A, Shannon CP, Gautier B et al. (2019). "DIABLO: an integrative
+  approach for identifying key molecular drivers from multi-omics
+  assays." _Bioinformatics_, 35(17), 3055--3062.
+- Wright MN, Ziegler A (2017). "ranger: A Fast Implementation of
+  Random Forests for High Dimensional Data in C++ and R." _Journal of
+  Statistical Software_, 77(1), 1--17.
 
 # Session information
 

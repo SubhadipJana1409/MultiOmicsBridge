@@ -651,7 +651,7 @@ test_that("plotSankey errors on non-MOBResult input", {
 
 test_that("generateReport prints without error", {
   result <- make_full_result()
-  expect_output(generateReport(result, n_top = 5), "MultiOmicsBridge")
+  expect_message(generateReport(result, n_top = 5), "MultiOmicsBridge")
 })
 
 test_that("generateReport saves file when path is given", {

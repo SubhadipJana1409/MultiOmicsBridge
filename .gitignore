@@ -5,3 +5,5 @@ single_commits.ps1
 MultiOmicsBridge.BiocCheck/
 *.Rproj
 .Rhistory
+.claude/
+.antigravitycli/

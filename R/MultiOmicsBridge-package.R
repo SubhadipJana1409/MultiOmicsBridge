@@ -37,7 +37,7 @@
 #'     cross-omics correlation networks for multi-omics biomarker ranking.}
 #'   \item{Module 4 — Diagnostic Classification}{
 #'     \code{\link{diagnosticClassifier}}: Host-only, microbiome-only,
-#'     and joint Random Forest classifiers with nested cross-validation.}
+#'     and joint Random Forest classifiers with stratified k-fold cross-validation.}
 #'   \item{Module 5 — Visualization and Reporting}{
 #'     \code{\link{plotIntegration}}, \code{\link{plotBiomarkerNetwork}},
 #'     \code{\link{plotClassifierComparison}}, \code{\link{plotSankey}},

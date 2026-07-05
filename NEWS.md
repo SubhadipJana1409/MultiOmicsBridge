@@ -1,3 +1,9 @@
+# MultiOmicsBridge 0.99.1
+
+## Bug fixes
+
+* Improve overall stability.
+
 # MultiOmicsBridge 0.99.0
 
 ## New features
@@ -25,7 +31,7 @@
   Returns a ranked `DataFrame` of multi-omics biomarkers.
 
 * `diagnosticClassifier()`: Train and evaluate host-only, microbiome-only,
-  and joint Random Forest classifiers using nested cross-validation.
+  and joint Random Forest classifiers using stratified k-fold cross-validation.
   Provides AUC-ROC comparison quantifying the multi-omics advantage.
 
 * `MultiOmicsBridgeAnalysis()`: One-call wrapper executing the full

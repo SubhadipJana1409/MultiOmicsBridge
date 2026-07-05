@@ -21,7 +21,7 @@ workflow. MultiOmicsBridge fills this gap:
 | Microbiome-aware normalization | CLR transformation (compositionally correct) alongside TMM/voom for RNA-seq |
 | Joint dimensionality reduction | Sparse multi-block PLS-DA (DIABLO) across both data layers |
 | Cross-omics biomarker selection | Loading scores + Spearman correlation network between host genes and microbial taxa |
-| Multi-omics diagnostic value | Host-only vs microbiome-only vs joint classifier comparison with nested CV |
+| Multi-omics diagnostic value | Host-only vs microbiome-only vs joint classifier comparison with stratified k-fold CV |
 
 ## The Five Modules
 
@@ -284,10 +284,15 @@ The **Sankey Flow Diagram** elegantly maps the relationship between the top indi
 
 ## References
 
-- Rohart F et al. (2017). mixOmics. *PLoS Comput Biol* 13(11):e1005752.
-- Franzosa EA et al. (2019). *Nature Microbiology* 4:293–305.
-- Wright MN & Ziegler A (2017). ranger. *J Stat Softw* 77(1):1–17.
 - Aitchison J (1982). The statistical analysis of compositional data. *JRSS-B* 44(2):139–177.
+- Breiman L (2001). Random Forests. *Machine Learning* 45:5–32.
+- Franzosa EA et al. (2019). *Nature Microbiology* 4:293–305.
+- Law CW et al. (2014). voom: precision weights unlock linear model analysis tools for RNA-seq read counts. *Genome Biology* 15:R29.
+- Ramos M et al. (2017). Software for the Integration of Multiomics Experiments in Bioconductor. *Cancer Research* 77(21):e39–e42.
+- Robinson MD & Oshlack A (2010). A scaling normalization method for differential expression analysis of RNA-seq data. *Genome Biology* 11:R25.
+- Rohart F et al. (2017). mixOmics. *PLoS Comput Biol* 13(11):e1005752.
+- Singh A et al. (2019). DIABLO: an integrative approach for identifying key molecular drivers from multi-omics assays. *Bioinformatics* 35(17):3055–3062.
+- Wright MN & Ziegler A (2017). ranger. *J Stat Softw* 77(1):1–17.
 
 ## Citation
 
