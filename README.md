@@ -290,6 +290,7 @@ The **Sankey Flow Diagram** elegantly maps the relationship between the top indi
 - Law CW et al. (2014). voom: precision weights unlock linear model analysis tools for RNA-seq read counts. *Genome Biology* 15:R29.
 - Ramos M et al. (2017). Software for the Integration of Multiomics Experiments in Bioconductor. *Cancer Research* 77(21):e39–e42.
 - Robinson MD & Oshlack A (2010). A scaling normalization method for differential expression analysis of RNA-seq data. *Genome Biology* 11:R25.
+- Robin X et al. (2011). pROC: an open-source package for R and S+ to analyze and compare ROC curves. *BMC Bioinformatics* 12:77.
 - Rohart F et al. (2017). mixOmics. *PLoS Comput Biol* 13(11):e1005752.
 - Singh A et al. (2019). DIABLO: an integrative approach for identifying key molecular drivers from multi-omics assays. *Bioinformatics* 35(17):3055–3062.
 - Wright MN & Ziegler A (2017). ranger. *J Stat Softw* 77(1):1–17.
